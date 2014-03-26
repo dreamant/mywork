@@ -186,6 +186,17 @@ function cookie($name, $value='', $option=null) {
     }
 }
 
+/**
+ * 如果文件存在就require进来
+ * @param string $path 文件路径
+ * @return void
+ */
+function requireIfExist($path){
+    if(file_exists($path)){
+        require $path;
+    }
+}
+
 //函数库结束
 
 defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']).'/');
@@ -258,7 +269,7 @@ array_unshift($seg,NULL);
 $class  = isset($seg[1])?$seg[1]:'main';
 $method = isset($seg[2])?$seg[2]:'index';
 if(!is_file(APP.'c'.$dir.$class.'.php'))show_404();
-require(APP.'c'.$dir.$class.'.php');
+requireIfExist(APP.'c'.$dir.$class.'.php');
 if(!class_exists($class))show_404();
 if(!method_exists($class,$method))show_404();
 $B2 = new $class();
@@ -283,7 +294,7 @@ function &load($path, $instantiate=TRUE){
   
   static $objects = array();
   if (isset($objects[$object_name])) return $objects[$object_name];
-  require(APP.$path.'.php');
+  requireIfExist(APP.$path.'.php');
   if ($instantiate == FALSE) $objects[$object_name] = TRUE;
   elseif ($param) $objects[$object_name] = new $class_name($param);
   else  $objects[$object_name] = new $class_name();
